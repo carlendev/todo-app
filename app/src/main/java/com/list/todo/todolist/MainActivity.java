@@ -1,12 +1,9 @@
 package com.list.todo.todolist;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,33 +11,33 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.list.todo.todolist.POJO.Task;
+import com.list.todo.todolist.factory.TaskFactory;
 import com.list.todo.todolist.sql.DBHelper;
-import com.list.todo.todolist.sql.ItemContract;
+import com.list.todo.todolist.sql.TaskDBHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DBHelper mHelper;
+    private DBHelper dbHelper;
     private ListView taskListView;
     private ArrayAdapter<String> mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         taskListView = findViewById(R.id.TodoList);
-        mHelper = new DBHelper(this);
+        dbHelper = new DBHelper(this);
         updateUI();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -65,14 +62,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         final String task = String.valueOf(taskEditText.getText());
                         Log.d("Add Dialog", "Task to add: " + task);
-                        SQLiteDatabase db = mHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put(ItemContract.TaskEntry.NAME, task);
-                        db.insertWithOnConflict(ItemContract.TaskEntry.TABLE,
-                                null,
-                                values,
-                                SQLiteDatabase.CONFLICT_REPLACE);
-                        db.close();
+                        TaskDBHelper.
+                                insertTask(TaskFactory.
+                                                createTask(String.
+                                                        valueOf(taskEditText.getText())),
+                                        dbHelper);
                         updateUI();
                     }
                 })
@@ -83,28 +77,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        final ArrayList<String> taskList = new ArrayList<>();
-        final SQLiteDatabase db = mHelper.getReadableDatabase();
-        final Cursor cursor = db.query(ItemContract.TaskEntry.TABLE,
-                new String[]{ItemContract.TaskEntry._ID, ItemContract.TaskEntry.NAME},
-                null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            final int idx = cursor.getColumnIndex(ItemContract.TaskEntry.NAME);
-            taskList.add(cursor.getString(idx));
-        }
+        final List<Task> tasksList = TaskDBHelper.getTasks(dbHelper);
+        final List <String> tasksNamesList = TaskFactory.listNames(tasksList);
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<>(this,
                     R.layout.items,
                     R.id.task_name,
-                    taskList);
+                    tasksNamesList);
             taskListView.setAdapter(mAdapter);
         } else {
             mAdapter.clear();
-            mAdapter.addAll(taskList);
+            mAdapter.addAll(tasksNamesList);
             mAdapter.notifyDataSetChanged();
         }
-        cursor.close();
-        db.close();
     }
 
 }

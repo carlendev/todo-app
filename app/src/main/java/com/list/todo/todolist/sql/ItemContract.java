@@ -13,7 +13,6 @@ public class ItemContract {
 
     public class TaskEntry implements BaseColumns {
         public static final String TABLE = "tasks";
-
         public static final String NAME = "name";
     }
 
