@@ -1,14 +1,12 @@
 package com.list.todo.todolist;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.list.todo.todolist.POJO.Task;
@@ -43,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_task_menu:
-                Log.d("Menu Items", "Add a new task");
-                createAddDialog(this);
+                Log.d("Menu Items", "Open Task Create Activity");
+                startActivity(new Intent(this, CreateTask.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void createAddDialog(final MainActivity ctx) {
+    /* private void createAddDialog(final MainActivity ctx) {
         final EditText taskEditText = new EditText(ctx);
         AlertDialog dialog = new AlertDialog.Builder(ctx)
                 .setTitle("Add a new task")
@@ -65,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
                         TaskDBHelper.
                                 insertTask(TaskFactory.
                                                 createTask(String.
-                                                        valueOf(taskEditText.getText())),
+                                                        valueOf(taskEditText.getText()),
+                                                        1,
+                                                        0),
                                         dbHelper);
                         updateUI();
                     }
@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                 .create();
         dialog.show();
 
-    }
+    }*/
 
     private void updateUI() {
-        final List<Task> tasksList = TaskDBHelper.getTasks(dbHelper);
+        final List<Task> tasksList = TaskDBHelper.getActiveTasks(dbHelper);
         final List <String> tasksNamesList = TaskFactory.listNames(tasksList);
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<>(this,

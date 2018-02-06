@@ -10,20 +10,25 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(final Context context) {
-        super(context, ItemContract.DB_NAME, null, ItemContract.DB_VERSION);
+        super(context, TaskContract.DB_NAME, null, TaskContract.DB_VERSION);
     }
 
+    // TODO(carlendev) add status for down task and date and category
     @Override
     public void onCreate(final SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + ItemContract.TaskEntry.TABLE + " ( " +
-                ItemContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ItemContract.TaskEntry.NAME + " TEXT NOT NULL);";
-        db.execSQL(createTable);
+        db.execSQL("CREATE TABLE " + TaskContract.TaskEntry.TABLE + " ( " +
+                TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskContract.TaskEntry.NAME + " TEXT NOT NULL, " +
+                TaskContract.TaskEntry.DESCRIPTION + " TEXT NOT NULL, " +
+                TaskContract.TaskEntry.DATE + " TEXT NOT NULL, " +
+                TaskContract.TaskEntry.TIME + " TEXT NOT NULL, " +
+                TaskContract.TaskEntry.CATEGORY + " INTEGER NOT NULL, " +
+                TaskContract.TaskEntry.STATE + " INTEGER NOT NULL);");
     }
 
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + ItemContract.TaskEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TaskContract.TaskEntry.TABLE);
         onCreate(db);
     }
 

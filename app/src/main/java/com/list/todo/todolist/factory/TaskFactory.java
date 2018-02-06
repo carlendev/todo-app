@@ -4,7 +4,6 @@ import com.list.todo.todolist.POJO.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by carlendev on 05/02/18.
@@ -12,9 +11,19 @@ import java.util.stream.Collectors;
 
 public class TaskFactory {
 
-    public static Task createTask(final String name) {
+    public static Task createTask(final String name,
+                                  final Integer state,
+                                  final Integer category,
+                                  final String description,
+                                  final String date,
+                                  final String time) {
         final Task task = new Task();
         task.setName(name);
+        task.setState(state);
+        task.setCategory(category);
+        task.setDescription(description);
+        task.setDate(date);
+        task.setTime(time);
         return task;
     }
 
