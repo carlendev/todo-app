@@ -3,21 +3,29 @@ package com.list.todo.todolist;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.list.todo.todolist.POJO.Task;
+import com.list.todo.todolist.POJO.ETaskCategory;
+import com.list.todo.todolist.factory.TaskFactory;
+import com.list.todo.todolist.sql.DBHelper;
+import com.list.todo.todolist.sql.TaskDBHelper;
+import com.list.todo.todolist.validation.TaskValidation;
+import com.list.todo.todolist.validation.Validation;
+
 import java.util.Calendar;
-import java.util.Date;
 
 public class CreateTask extends AppCompatActivity {
 
@@ -35,8 +43,22 @@ public class CreateTask extends AppCompatActivity {
                 final String description = getTextViewObj(R.id.description_task);
                 final String date = getTextViewObj(R.id.date_task);
                 final String time = getTextViewObj(R.id.hour_task);
-                final String category = ((Spinner) findViewById(R.id.category_name)).getSelectedItem().toString();
-                populateSnackBar("");
+                final String category = ((Spinner) findViewById(R.id.category_name))
+                        .getSelectedItem()
+                        .toString();
+                final Task task = TaskFactory.createTask(name,
+                        1,
+                        ETaskCategory.valueOf(category.toUpperCase()).ordinal(),
+                        description,
+                        date,
+                        time);
+                final Validation validation = new TaskValidation(task).validation();
+                if (!validation.isValue()) populateSnackBar(validation.getMsg());
+                else {
+                    TaskDBHelper.insertTask(task, new DBHelper(CreateTask.this));
+                    Log.d("Add Task", "Task to add: " + task.getName());
+                    startActivity(new Intent(CreateTask.this, MainActivity.class));
+                }
             }
         });
 

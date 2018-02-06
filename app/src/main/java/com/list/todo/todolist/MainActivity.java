@@ -2,14 +2,19 @@ package com.list.todo.todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.list.todo.todolist.POJO.Task;
+import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.factory.TaskFactory;
 import com.list.todo.todolist.sql.DBHelper;
 import com.list.todo.todolist.sql.TaskDBHelper;
@@ -21,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private ListView taskListView;
     private ArrayAdapter<String> mAdapter;
+    private List<TaskDB> tasksDB;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -49,36 +56,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /* private void createAddDialog(final MainActivity ctx) {
-        final EditText taskEditText = new EditText(ctx);
-        AlertDialog dialog = new AlertDialog.Builder(ctx)
-                .setTitle("Add a new task")
-                .setMessage("Next Task")
-                .setView(taskEditText)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final String task = String.valueOf(taskEditText.getText());
-                        Log.d("Add Dialog", "Task to add: " + task);
-                        TaskDBHelper.
-                                insertTask(TaskFactory.
-                                                createTask(String.
-                                                        valueOf(taskEditText.getText()),
-                                                        1,
-                                                        0),
-                                        dbHelper);
-                        updateUI();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
-
-    }*/
-
     private void updateUI() {
-        final List<Task> tasksList = TaskDBHelper.getActiveTasks(dbHelper);
-        final List <String> tasksNamesList = TaskFactory.listNames(tasksList);
+        tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
+        final List <String> tasksNamesList = TaskFactory.listNames((List<Task>)(List<?>)tasksDB);
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<>(this,
                     R.layout.items,
@@ -90,6 +70,25 @@ public class MainActivity extends AppCompatActivity {
             mAdapter.addAll(tasksNamesList);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void populateSnackBar(final String msg) {
+        Snackbar.make(findViewById(android.R.id.content), msg,
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    public void onClickDone(final View v) {
+        final View parentRow = (View) v.getParent();
+        final ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        final RelativeLayout rl = (RelativeLayout)v.getParent();
+        final TextView tv = rl.findViewById(R.id.task_name);
+        populateSnackBar(tv.getText().toString() + " - Done");
+        final TaskDB taskDB = tasksDB.get(position);
+        taskDB.setState(0);
+        TaskDBHelper.updateTask(tasksDB.get(position), dbHelper);
+        updateUI();
     }
 
 }

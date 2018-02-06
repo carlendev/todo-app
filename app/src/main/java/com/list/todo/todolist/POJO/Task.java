@@ -6,17 +6,17 @@ package com.list.todo.todolist.POJO;
 
 public class Task {
 
-    private String name;
+    protected String name;
 
-    private Integer state;
+    protected Integer state;
 
-    private Integer category;
+    protected Integer category;
 
-    private String description;
+    protected String description;
 
-    private String date;
+    protected String date;
 
-    private String time;
+    protected String time;
 
     public String getName() {
         return name;
