@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO(carlendev) better display of list item urgent
+    // TODO(carlendev) better display of list item urgent and on close date and close hour
     private void updateUI() {
         tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
         if (taskAdapter == null) {

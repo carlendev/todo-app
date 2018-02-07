@@ -43,8 +43,8 @@ public class TaskActivity extends AppCompatActivity {
         task = TaskDBHelper.getTaskById(taskId, dbHelper);
         ViewUtils.populateSnackBar(task.getName(), this);
         setTitle(task.getName());
-        initTaskFields(task);
         ViewUtils.setCategorySpinner(this, false);
+        initTaskFields(task);
     }
 
     @SuppressLint("SetTextI18n")
