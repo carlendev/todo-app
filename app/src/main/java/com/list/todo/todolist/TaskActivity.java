@@ -3,8 +3,10 @@ package com.list.todo.todolist;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.list.todo.todolist.POJO.ETaskCategory;
 import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.Utils.ViewUtils;
 import com.list.todo.todolist.sql.DBHelper;
 import com.list.todo.todolist.sql.TaskDBHelper;
+import com.list.todo.todolist.validation.TaskValidation;
+import com.list.todo.todolist.validation.Validation;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -62,7 +67,7 @@ public class TaskActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -91,7 +96,31 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void add() {
-
+        final String name = ViewUtils.getTextViewObj(R.id.name_task,
+                TaskActivity.this);
+        final String description = ViewUtils.getTextViewObj(R.id.description_task,
+                TaskActivity.this);
+        final String date = ViewUtils.getTextViewObj(R.id.date_task,
+                TaskActivity.this);
+        final String time = ViewUtils.getTextViewObj(R.id.hour_task,
+                TaskActivity.this);
+        final String category = ((Spinner) findViewById(R.id.category_name))
+                .getSelectedItem()
+                .toString();
+        task.setName(name);
+        task.setCategory(ETaskCategory.valueOf(category.toUpperCase()).ordinal());
+        task.setDescription(description);
+        task.setDate(date);
+        task.setTime(time);
+        final Validation validation = new TaskValidation(task).validation();
+        if (!validation.isValue()) ViewUtils.populateSnackBar(validation.getMsg(),
+                TaskActivity.this);
+        else {
+            TaskDBHelper.updateTask(task, new DBHelper(TaskActivity.this));
+            Log.d("Update Task", "Task to add: " + task.getName());
+            ViewUtils.populateSnackBar("Update " + task.getName(), TaskActivity.this);
+            setTitle(task.getName());
+        }
     }
 
     public void onClickHour(final View v) {
