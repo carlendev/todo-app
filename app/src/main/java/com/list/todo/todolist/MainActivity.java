@@ -2,7 +2,6 @@ package com.list.todo.todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +22,8 @@ import com.list.todo.todolist.sql.TaskDBHelper;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final String ID_TASK = "idTask";
 
     private DBHelper dbHelper;
     private ListView taskListView;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         final ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
         final Intent intent =new Intent(this, TaskActivity.class);
-        intent.putExtra("idTask", String.valueOf(tasksDB.get(position).get_ID()));
+        intent.putExtra(ID_TASK, String.valueOf(tasksDB.get(position).get_ID()));
         startActivity(intent);
     }
 

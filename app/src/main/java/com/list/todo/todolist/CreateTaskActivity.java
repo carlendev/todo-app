@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
@@ -37,6 +36,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_task);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(TITLE);
+        ViewUtils.setCategorySpinner(this);
 
         final Button addBtn = findViewById(R.id.create_task);
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -69,13 +69,6 @@ public class CreateTaskActivity extends AppCompatActivity {
                 }
             }
         });
-
-        final Spinner category_spinner = findViewById(R.id.category_name);
-        final ArrayAdapter<CharSequence> mAdapter = ArrayAdapter.createFromResource(this,
-                R.array.categories_array,
-                android.R.layout.simple_spinner_item);
-        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        category_spinner.setAdapter(mAdapter);
     }
 
     public void onClickDate(final View v) {

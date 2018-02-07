@@ -41,6 +41,7 @@
         android:enabled="false"
         android:hint="@string/hour"
         android:inputType="none"
+        android:onClick="onClickHour"
         android:focusable="false" />
 
     <EditText
@@ -53,6 +54,7 @@
         android:enabled="false"
         android:inputType="none"
         android:focusable="false"
+        android:onClick="onClickDate"
         android:hint="@string/date" />
 
     <EditText
@@ -74,6 +76,7 @@
         android:layout_below="@+id/description_task"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="26dp"
+        android:onClick="onClickEdit"
         android:text="@string/edit" />
 
 
