@@ -1,4 +1,4 @@
-package com.list.todo.todolist.sql;
+package com.list.todo.todolist.SQL;
 
 /**
  * Created by carlendev on 04/02/18.

@@ -1,4 +1,4 @@
-package com.list.todo.todolist.sql;
+package com.list.todo.todolist.SQL;
 
 import android.provider.BaseColumns;
 

@@ -1,4 +1,4 @@
-package com.list.todo.todolist.sql;
+package com.list.todo.todolist.SQL;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.list.todo.todolist.POJO.Task;
 import com.list.todo.todolist.POJO.TaskDB;
-import com.list.todo.todolist.factory.TaskFactory;
+import com.list.todo.todolist.Factory.TaskFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +60,8 @@ public class TaskDBHelper {
         return tasksDB;
     }
 
-    public static List<TaskDB> getActiveTasks(final DBHelper dbHelper) {
-        final List<TaskDB> tasksDB = new ArrayList<>();
+    public static ArrayList<TaskDB> getActiveTasks(final DBHelper dbHelper) {
+        final ArrayList<TaskDB> tasksDB = new ArrayList<>();
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         final Cursor cursor = getCursor(db);
         while (cursor.moveToNext()) {

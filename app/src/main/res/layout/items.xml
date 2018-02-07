@@ -24,9 +24,8 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_see"
-        android:layout_alignBottom="@+id/button_see"
         android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/task_name"
         android:onClick="onClickDone"
         android:text="@string/done"
         android:textAlignment="center"
@@ -37,10 +36,32 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_done"
+        android:layout_alignBottom="@+id/button_done"
         android:layout_toStartOf="@+id/button_done"
+        android:onClick="onClickItem"
         android:text="@string/see"
         android:textAlignment="center"
-        android:onClick="onClickItem"
         android:textColorLink="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/task_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_see"
+        android:layout_alignParentStart="true"
+        android:onClick="onClickItem"
+        android:text="@string/date" />
+
+    <TextView
+        android:id="@+id/task_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/task_date"
+        android:layout_alignBottom="@+id/task_date"
+        android:layout_marginStart="18dp"
+        android:layout_toEndOf="@+id/task_date"
+        android:onClick="onClickItem"
+        android:text="@string/hour" />
 
 </RelativeLayout>

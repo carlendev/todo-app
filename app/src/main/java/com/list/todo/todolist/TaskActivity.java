@@ -18,8 +18,8 @@ import android.widget.TimePicker;
 import com.list.todo.todolist.POJO.ETaskCategory;
 import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.Utils.ViewUtils;
-import com.list.todo.todolist.sql.DBHelper;
-import com.list.todo.todolist.sql.TaskDBHelper;
+import com.list.todo.todolist.SQL.DBHelper;
+import com.list.todo.todolist.SQL.TaskDBHelper;
 import com.list.todo.todolist.validation.TaskValidation;
 import com.list.todo.todolist.validation.Validation;
 

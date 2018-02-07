@@ -7,18 +7,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.list.todo.todolist.POJO.Task;
+import com.list.todo.todolist.Adapter.TaskAdapter;
 import com.list.todo.todolist.POJO.TaskDB;
+import com.list.todo.todolist.SQL.DBHelper;
+import com.list.todo.todolist.SQL.TaskDBHelper;
 import com.list.todo.todolist.Utils.ViewUtils;
-import com.list.todo.todolist.factory.TaskFactory;
-import com.list.todo.todolist.sql.DBHelper;
-import com.list.todo.todolist.sql.TaskDBHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private ListView taskListView;
-    private ArrayAdapter<String> mAdapter;
-    private List<TaskDB> tasksDB;
+    private TaskAdapter taskAdapter;
+    private ArrayList<TaskDB> tasksDB;
 
 
     @Override
@@ -61,17 +60,13 @@ public class MainActivity extends AppCompatActivity {
     // TODO(carlendev) better display of list item urgent
     private void updateUI() {
         tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
-        final List <String> tasksNamesList = TaskFactory.listNames((List<Task>)(List<?>)tasksDB);
-        if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<>(this,
-                    R.layout.items,
-                    R.id.task_name,
-                    tasksNamesList);
-            taskListView.setAdapter(mAdapter);
+        if (taskAdapter == null) {
+            taskAdapter = new TaskAdapter(this, tasksDB);
+            taskListView.setAdapter(taskAdapter);
         } else {
-            mAdapter.clear();
-            mAdapter.addAll(tasksNamesList);
-            mAdapter.notifyDataSetChanged();
+            taskAdapter.clear();
+            taskAdapter.addAll(tasksDB);
+            taskAdapter.notifyDataSetChanged();
         }
     }
 
