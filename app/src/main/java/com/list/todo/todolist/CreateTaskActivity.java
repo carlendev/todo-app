@@ -27,7 +27,7 @@ import com.list.todo.todolist.validation.Validation;
 
 import java.util.Calendar;
 
-public class CreateTask extends AppCompatActivity {
+public class CreateTaskActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,9 +55,9 @@ public class CreateTask extends AppCompatActivity {
                 final Validation validation = new TaskValidation(task).validation();
                 if (!validation.isValue()) populateSnackBar(validation.getMsg());
                 else {
-                    TaskDBHelper.insertTask(task, new DBHelper(CreateTask.this));
+                    TaskDBHelper.insertTask(task, new DBHelper(CreateTaskActivity.this));
                     Log.d("Add Task", "Task to add: " + task.getName());
-                    startActivity(new Intent(CreateTask.this, MainActivity.class));
+                    startActivity(new Intent(CreateTaskActivity.this, MainActivity.class));
                 }
             }
         });

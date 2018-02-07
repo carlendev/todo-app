@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add_task_menu:
                 Log.d("Menu Items", "Open Task Create Activity");
-                startActivity(new Intent(this, CreateTask.class));
+                startActivity(new Intent(this, CreateTaskActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // TODO(carlendev) make utils function of that
     private void populateSnackBar(final String msg) {
         Snackbar.make(findViewById(android.R.id.content), msg,
                 Snackbar.LENGTH_LONG)
@@ -89,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
         taskDB.setState(0);
         TaskDBHelper.updateTask(tasksDB.get(position), dbHelper);
         updateUI();
+    }
+
+    public void onClickItem(final View v) {
+        final View parentRow = (View) v.getParent();
+        final ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        final Intent intent =new Intent(this, TaskActivity.class);
+        intent.putExtra("idTask", String.valueOf(tasksDB.get(position).get_ID()));
+        startActivity(intent);
     }
 
 }

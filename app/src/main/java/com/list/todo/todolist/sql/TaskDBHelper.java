@@ -33,26 +33,28 @@ public class TaskDBHelper {
         db.close();
     }
 
+    private static TaskDB getTaskDBByCursor(final Cursor cursor) {
+        final int id = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
+        final int idName = cursor.getColumnIndex(TaskContract.TaskEntry.NAME);
+        final int idState = cursor.getColumnIndex(TaskContract.TaskEntry.STATE);
+        final int idCategory = cursor.getColumnIndex(TaskContract.TaskEntry.CATEGORY);
+        final int idDescription = cursor.getColumnIndex(TaskContract.TaskEntry.DESCRIPTION);
+        final int idDate = cursor.getColumnIndex(TaskContract.TaskEntry.DATE);
+        final int idTime = cursor.getColumnIndex(TaskContract.TaskEntry.TIME);
+        return TaskFactory.createTaskDB(cursor.getString(idName),
+                cursor.getInt(idState),
+                cursor.getInt(idCategory),
+                cursor.getString(idDescription),
+                cursor.getString(idDate),
+                cursor.getString(idTime),
+                cursor.getInt(id));
+    }
+
     public static List<TaskDB> getTasks(final DBHelper dbHelper) {
         final List<TaskDB> tasksDB = new ArrayList<>();
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         final Cursor cursor = getCursor(db);
-        while (cursor.moveToNext()) {
-            final int id = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
-            final int idName = cursor.getColumnIndex(TaskContract.TaskEntry.NAME);
-            final int idState = cursor.getColumnIndex(TaskContract.TaskEntry.STATE);
-            final int idCategory= cursor.getColumnIndex(TaskContract.TaskEntry.CATEGORY);
-            final int idDescription= cursor.getColumnIndex(TaskContract.TaskEntry.DESCRIPTION);
-            final int idDate= cursor.getColumnIndex(TaskContract.TaskEntry.DATE);
-            final int idTime= cursor.getColumnIndex(TaskContract.TaskEntry.TIME);
-            tasksDB.add(TaskFactory.createTaskDB(cursor.getString(idName),
-                    cursor.getInt(idState),
-                    cursor.getInt(idCategory),
-                    cursor.getString(idDescription),
-                    cursor.getString(idDate),
-                    cursor.getString(idTime),
-                    cursor.getInt(id)));
-        }
+        while (cursor.moveToNext()) tasksDB.add(getTaskDBByCursor(cursor));
         cursor.close();
         db.close();
         return tasksDB;
@@ -63,21 +65,9 @@ public class TaskDBHelper {
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         final Cursor cursor = getCursor(db);
         while (cursor.moveToNext()) {
-            final int id = cursor.getColumnIndex(TaskContract.TaskEntry._ID);
-            final int idName = cursor.getColumnIndex(TaskContract.TaskEntry.NAME);
             final int idState = cursor.getColumnIndex(TaskContract.TaskEntry.STATE);
-            final int idCategory= cursor.getColumnIndex(TaskContract.TaskEntry.CATEGORY);
-            final int idDescription= cursor.getColumnIndex(TaskContract.TaskEntry.DESCRIPTION);
-            final int idDate= cursor.getColumnIndex(TaskContract.TaskEntry.DATE);
-            final int idTime= cursor.getColumnIndex(TaskContract.TaskEntry.TIME);
-            final int state =  cursor.getInt(idState);
-            if (state == 1) tasksDB.add(TaskFactory.createTaskDB(cursor.getString(idName),
-                    cursor.getInt(idState),
-                    cursor.getInt(idCategory),
-                    cursor.getString(idDescription),
-                    cursor.getString(idDate),
-                    cursor.getString(idTime),
-                    cursor.getInt(id)));
+            final int state = cursor.getInt(idState);
+            if (state == 1) tasksDB.add(getTaskDBByCursor(cursor));
         }
         cursor.close();
         db.close();
@@ -94,6 +84,18 @@ public class TaskDBHelper {
                         TaskContract.TaskEntry.DATE,
                         TaskContract.TaskEntry.TIME},
                 null, null, null, null, null);
+    }
+
+    public static TaskDB getTaskById(final int id, final DBHelper dbHelper) {
+        final SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
+        final String query = "SELECT * FROM " + TaskContract.TaskEntry.TABLE + " WHERE " +
+                TaskContract.TaskEntry._ID + " = " + Integer.toString(id);
+        final Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        cursor.moveToFirst();
+        final TaskDB taskDB = getTaskDBByCursor(cursor);
+        sqLiteDatabase.close();
+        cursor.close();
+        return taskDB;
     }
 
     public static void updateTask(final TaskDB task, final DBHelper dbHelper) {
