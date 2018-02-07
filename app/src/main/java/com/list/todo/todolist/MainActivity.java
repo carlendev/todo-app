@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.list.todo.todolist.POJO.Task;
 import com.list.todo.todolist.POJO.TaskDB;
+import com.list.todo.todolist.Utils.ViewUtils;
 import com.list.todo.todolist.factory.TaskFactory;
 import com.list.todo.todolist.sql.DBHelper;
 import com.list.todo.todolist.sql.TaskDBHelper;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // TODO(carlendev) better display of list item urgent
     private void updateUI() {
         tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
         final List <String> tasksNamesList = TaskFactory.listNames((List<Task>)(List<?>)tasksDB);
@@ -72,20 +74,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO(carlendev) make utils function of that
-    private void populateSnackBar(final String msg) {
-        Snackbar.make(findViewById(android.R.id.content), msg,
-                Snackbar.LENGTH_LONG)
-                .show();
-    }
-
     public void onClickDone(final View v) {
         final View parentRow = (View) v.getParent();
         final ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
         final RelativeLayout rl = (RelativeLayout)v.getParent();
         final TextView tv = rl.findViewById(R.id.task_name);
-        populateSnackBar(tv.getText().toString() + " - Done");
+        ViewUtils.populateSnackBar(tv.getText().toString() + " - Done", this);
         final TaskDB taskDB = tasksDB.get(position);
         taskDB.setState(0);
         TaskDBHelper.updateTask(tasksDB.get(position), dbHelper);

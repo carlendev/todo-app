@@ -8,6 +8,7 @@
     <string name="add">Add</string>
     <string name="hour">Time</string>
     <string name="see">SEE</string>
+    <string name="edit">Edit</string>
     <string-array name="categories_array">
         <item>Urgent</item>
         <item>Normal</item>

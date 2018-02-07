@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +18,7 @@ import android.widget.TimePicker;
 
 import com.list.todo.todolist.POJO.Task;
 import com.list.todo.todolist.POJO.ETaskCategory;
+import com.list.todo.todolist.Utils.ViewUtils;
 import com.list.todo.todolist.factory.TaskFactory;
 import com.list.todo.todolist.sql.DBHelper;
 import com.list.todo.todolist.sql.TaskDBHelper;
@@ -29,20 +29,27 @@ import java.util.Calendar;
 
 public class CreateTaskActivity extends AppCompatActivity {
 
+    private final String TITLE = "Add Task";
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(TITLE);
 
         final Button addBtn = findViewById(R.id.create_task);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String name = getTextViewObj(R.id.name_task);
-                final String description = getTextViewObj(R.id.description_task);
-                final String date = getTextViewObj(R.id.date_task);
-                final String time = getTextViewObj(R.id.hour_task);
+                final String name = ViewUtils.getTextViewObj(R.id.name_task,
+                        CreateTaskActivity.this);
+                final String description = ViewUtils.getTextViewObj(R.id.description_task,
+                        CreateTaskActivity.this);
+                final String date = ViewUtils.getTextViewObj(R.id.date_task,
+                        CreateTaskActivity.this);
+                final String time = ViewUtils.getTextViewObj(R.id.hour_task,
+                        CreateTaskActivity.this);
                 final String category = ((Spinner) findViewById(R.id.category_name))
                         .getSelectedItem()
                         .toString();
@@ -53,7 +60,8 @@ public class CreateTaskActivity extends AppCompatActivity {
                         date,
                         time);
                 final Validation validation = new TaskValidation(task).validation();
-                if (!validation.isValue()) populateSnackBar(validation.getMsg());
+                if (!validation.isValue()) ViewUtils.populateSnackBar(validation.getMsg(),
+                        CreateTaskActivity.this);
                 else {
                     TaskDBHelper.insertTask(task, new DBHelper(CreateTaskActivity.this));
                     Log.d("Add Task", "Task to add: " + task.getName());
@@ -68,12 +76,6 @@ public class CreateTaskActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category_spinner.setAdapter(mAdapter);
-    }
-
-    private void populateSnackBar(final String msg) {
-        Snackbar.make(findViewById(android.R.id.content), msg,
-                Snackbar.LENGTH_LONG)
-                .show();
     }
 
     public void onClickDate(final View v) {
@@ -113,11 +115,6 @@ public class CreateTaskActivity extends AppCompatActivity {
                     }
         }, hour, minute, true);
         timePickerDialog.show();
-    }
-
-    private String getTextViewObj(final int entityId) {
-        TextView textView = findViewById(entityId);
-        return textView.getText().toString();
     }
 
     @Override
