@@ -74,6 +74,20 @@ public class TaskDBHelper {
         return tasksDB;
     }
 
+    public static ArrayList<TaskDB> getArchivedTasks(final DBHelper dbHelper) {
+        final ArrayList<TaskDB> tasksDB = new ArrayList<>();
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
+        final Cursor cursor = getCursor(db);
+        while (cursor.moveToNext()) {
+            final int idState = cursor.getColumnIndex(TaskContract.TaskEntry.STATE);
+            final int state = cursor.getInt(idState);
+            if (state == 0) tasksDB.add(getTaskDBByCursor(cursor));
+        }
+        cursor.close();
+        db.close();
+        return tasksDB;
+    }
+
     private static Cursor getCursor(final SQLiteDatabase db) {
         return db.query(TaskContract.TaskEntry.TABLE,
                 new String[]{TaskContract.TaskEntry._ID,

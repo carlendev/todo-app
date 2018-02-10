@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.list.todo.todolist.POJO.ETaskActive;
 import com.list.todo.todolist.POJO.ETaskCategory;
 import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.R;
@@ -22,13 +24,21 @@ import java.util.Calendar;
 
 public class TaskAdapter extends ArrayAdapter<TaskDB> {
 
-    private static final int MAX_NAME_LENGTH = 17;
+    private static final int MAX_NAME_LENGTH_ACTIVE = 17;
+    private static final int MAX_NAME_LENGTH_ARCHIVED = 14;
     private static final String URGENT_COLOR = "#ffff4444";
     private static final String NORMAL_COLOR = "#ff000000";
     private static final String WARNING_COLOR = "#ffcc0000";
+    private static final CharSequence ACTIVE_STATE = "Done";
+    private static final CharSequence ARCHIVED_STATE = "Unarchived";
 
-    public TaskAdapter(final Context context, final ArrayList<TaskDB> tasks) {
+    private ETaskActive active;
+
+    public TaskAdapter(final Context context,
+                       final ArrayList<TaskDB> tasks,
+                       final ETaskActive active) {
         super(context, 0, tasks);
+        this.active = active;
     }
 
     private void setTextNameColor(final TextView name, final TaskDB task) {
@@ -61,8 +71,13 @@ public class TaskAdapter extends ArrayAdapter<TaskDB> {
         final TextView name = convertView.findViewById(R.id.task_name);
         final TextView date = convertView.findViewById(R.id.task_date);
         final TextView time = convertView.findViewById(R.id.task_hour);
+        final Button actionBtn = convertView.findViewById(R.id.button_action);
+        if (active == ETaskActive.ACTIVE) actionBtn.setText(ACTIVE_STATE);
+        else actionBtn.setText(ARCHIVED_STATE);
         if (task == null) return convertView;
-        name.setText(task.getName().length() > MAX_NAME_LENGTH ?
+        if (active == ETaskActive.ACTIVE) name.setText(task.getName().length() >
+                MAX_NAME_LENGTH_ACTIVE ? task.getName().substring(0, 14) + "..." : task.getName());
+        else name.setText(task.getName().length() > MAX_NAME_LENGTH_ARCHIVED ?
                 task.getName().substring(0, 14) + "..." : task.getName());
         date.setText(task.getDate());
         time.setText(task.getTime());

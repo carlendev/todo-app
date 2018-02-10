@@ -20,13 +20,13 @@
         tools:ignore="RtlHardcoded" />
 
     <Button
-        android:id="@+id/button_done"
+        android:id="@+id/button_action"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/task_name"
-        android:onClick="onClickDone"
+        android:onClick="onClickAction"
         android:text="@string/done"
         android:textAlignment="center"
         tools:ignore="RelativeOverlap,RtlHardcoded" />
@@ -36,9 +36,9 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_done"
-        android:layout_alignBottom="@+id/button_done"
-        android:layout_toStartOf="@+id/button_done"
+        android:layout_alignBaseline="@+id/button_action"
+        android:layout_alignBottom="@+id/button_action"
+        android:layout_toStartOf="@+id/button_action"
         android:onClick="onClickItem"
         android:text="@string/see"
         android:textAlignment="center"

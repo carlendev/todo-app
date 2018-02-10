@@ -7,11 +7,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.list.todo.todolist.Adapter.TaskAdapter;
+import com.list.todo.todolist.POJO.ETaskActive;
 import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.SQL.DBHelper;
 import com.list.todo.todolist.SQL.TaskDBHelper;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView taskListView;
     private TaskAdapter taskAdapter;
     private ArrayList<TaskDB> tasksDB;
+    private ETaskActive state = ETaskActive.ACTIVE;
 
     /**
      * @param savedInstanceState
@@ -37,7 +41,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         taskListView = findViewById(R.id.TodoList);
         dbHelper = new DBHelper(this);
-        updateUI();
+        ViewUtils.setActiveSpinner(this);
+        updateUI(ETaskActive.ACTIVE);
+        final Spinner active_spinner = findViewById(R.id.category_active);
+        active_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(final AdapterView<?> adapterView,
+                                       final View view,
+                                       final int position,
+                                       final long l) {
+                if (ETaskActive.ACTIVE.ordinal() == position) {
+                    updateUI(ETaskActive.ACTIVE);
+                    state = ETaskActive.ACTIVE;
+                }
+                else {
+                    updateUI(ETaskActive.ARCHIVED);
+                    state = ETaskActive.ARCHIVED;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
     }
 
     /**
@@ -76,34 +103,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Update Task Items list adapter
+     * @param state
      */
-    private void updateUI() {
-        tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
-        if (taskAdapter == null) {
-            taskAdapter = new TaskAdapter(this, tasksDB);
-            taskListView.setAdapter(taskAdapter);
-        } else {
-            taskAdapter.clear();
-            taskAdapter.addAll(tasksDB);
-            taskAdapter.notifyDataSetChanged();
-        }
+    private void updateUI(final ETaskActive state) {
+        if (state == ETaskActive.ACTIVE) tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
+        else tasksDB = TaskDBHelper.getArchivedTasks(dbHelper);
+        taskAdapter = new TaskAdapter(this, tasksDB, state);
+        taskListView.setAdapter(taskAdapter);
     }
 
     /**
      * @param v
      */
-    public void onClickDone(final View v) {
+    public void onClickAction(final View v) {
         final View parentRow = (View) v.getParent();
         final ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
-        final RelativeLayout rl = (RelativeLayout)v.getParent();
+        final RelativeLayout rl = (RelativeLayout) v.getParent();
         final TextView tv = rl.findViewById(R.id.task_name);
+        if (state == ETaskActive.ACTIVE) onClickDone(tv, position);
+        else onClickArchived(tv, position);
+    }
+
+    /**
+     * @param tv
+     * @param position
+     */
+    private void onClickArchived(final TextView tv, final int position) {
+        ViewUtils.populateSnackBar(tv.getText().toString() + " - Done", this);
+        final TaskDB taskDB = tasksDB.get(position);
+        taskDB.setState(1);
+        TaskDBHelper.updateTask(tasksDB.get(position), dbHelper);
+        updateUI(ETaskActive.ARCHIVED);
+    }
+
+    /**
+     * @param tv
+     * @param position
+     */
+    private void onClickDone(final TextView tv, final int position) {
         ViewUtils.populateSnackBar(tv.getText().toString() + " - Done", this);
         final TaskDB taskDB = tasksDB.get(position);
         taskDB.setState(0);
         TaskDBHelper.updateTask(tasksDB.get(position), dbHelper);
-        updateUI();
+        updateUI(ETaskActive.ACTIVE);
     }
 
     /**

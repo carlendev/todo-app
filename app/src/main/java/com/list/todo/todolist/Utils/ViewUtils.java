@@ -26,10 +26,10 @@ public class ViewUtils {
         return textView.getText().toString();
     }
 
-    public static void setCategorySpinner(final AppCompatActivity app) {
-        final Spinner category_spinner = app.findViewById(R.id.category_name);
+    public static void setActiveSpinner(final AppCompatActivity app) {
+        final Spinner category_spinner = app.findViewById(R.id.category_active);
         final ArrayAdapter<CharSequence> mAdapter = ArrayAdapter.createFromResource(app,
-                R.array.categories_array,
+                R.array.active_array,
                 android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category_spinner.setAdapter(mAdapter);

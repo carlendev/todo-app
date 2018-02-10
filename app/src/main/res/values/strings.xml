@@ -13,4 +13,8 @@
         <item>Urgent</item>
         <item>Normal</item>
     </string-array>
+    <string-array name="active_array">
+        <item>Active</item>
+        <item>Archived</item>
+    </string-array>
 </resources>
