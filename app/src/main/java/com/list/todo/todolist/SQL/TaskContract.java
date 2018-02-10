@@ -10,7 +10,6 @@ public class TaskContract {
 
     public static final String DB_NAME = "com.list.todo.db";
 
-    // TODO(carlendev) UPDATE THE FUCKING DATABASE VERSION AFTER EACH CHANGE
     public static final int DB_VERSION = 8;
 
     public class TaskEntry implements BaseColumns {

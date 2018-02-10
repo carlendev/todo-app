@@ -62,7 +62,7 @@ public class TaskDBHelper {
 
     public static ArrayList<TaskDB> getActiveTasks(final DBHelper dbHelper) {
         final ArrayList<TaskDB> tasksDB = new ArrayList<>();
-        final SQLiteDatabase db = dbHelper.getReadableDatabase();
+            final SQLiteDatabase db = dbHelper.getReadableDatabase();
         final Cursor cursor = getCursor(db);
         while (cursor.moveToNext()) {
             final int idState = cursor.getColumnIndex(TaskContract.TaskEntry.STATE);

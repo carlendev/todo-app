@@ -15,7 +15,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.list.todo.todolist.Factory.TaskFactory;
 import com.list.todo.todolist.POJO.ETaskCategory;
+import com.list.todo.todolist.POJO.Task;
 import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.Utils.ViewUtils;
 import com.list.todo.todolist.SQL.DBHelper;
@@ -23,30 +25,62 @@ import com.list.todo.todolist.SQL.TaskDBHelper;
 import com.list.todo.todolist.validation.TaskValidation;
 import com.list.todo.todolist.validation.Validation;
 
+import java.util.Calendar;
+
 public class TaskActivity extends AppCompatActivity {
 
     private final String ID_TASK = "idTask";
-    private final String ADD_MODE = "Add";
-    private final String EDIT_MODE = "Edit";
+    private static final CharSequence TASK_CREATE = "Create Task";
+    private static final CharSequence CREATE_MODE = "Create";
+    private static final CharSequence ADD_MODE = "Add";
+    private static final CharSequence EDIT_MODE = "Edit";
 
     private DBHelper dbHelper;
     private int taskId;
     private TaskDB task;
+    private boolean inEdit;
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dbHelper = new DBHelper(this);
-        taskId = Integer.parseInt(getIntent().getStringExtra(ID_TASK));
-        task = TaskDBHelper.getTaskById(taskId, dbHelper);
-        ViewUtils.populateSnackBar(task.getName(), this);
-        setTitle(task.getName());
-        ViewUtils.setCategorySpinner(this, false);
-        initTaskFields(task);
+        final String maybeID = getIntent().getStringExtra(ID_TASK);
+        if (maybeID == null) {
+            inEdit = false;
+            ViewUtils.populateSnackBar("You can create a new Task", this);
+            setTitle(TASK_CREATE);
+            ViewUtils.setCategorySpinner(this, true);
+            final Button button = findViewById(R.id.edit_button);
+            button.setText(CREATE_MODE);
+            enableInput(CREATE_MODE);
+        } else {
+            inEdit = true;
+            taskId = Integer.parseInt(getIntent().getStringExtra(ID_TASK));
+            task = TaskDBHelper.getTaskById(taskId, dbHelper);
+            ViewUtils.populateSnackBar(task.getName(), this);
+            ViewUtils.setCategorySpinner(this, false);
+            setTitle(task.getName());
+            initTaskFields(task);
+        }
     }
 
+    /**
+     *
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
+    }
+
+    /**
+     * @param task
+     */
     @SuppressLint("SetTextI18n")
     private void initTaskFields(final TaskDB task) {
         final TextView name = findViewById(R.id.name_task);
@@ -63,6 +97,10 @@ public class TaskActivity extends AppCompatActivity {
         spinner.setSelection(task.getCategory());
     }
 
+    /**
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
@@ -74,27 +112,36 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
-    private void enableInput(final boolean state) {
+    /**
+     * @param mode Current mode of the activity
+     */
+    private void enableInput(final CharSequence mode) {
         final TextView name = findViewById(R.id.name_task);
         final TextView date = findViewById(R.id.date_task);
         final TextView hour = findViewById(R.id.hour_task);
         final TextView description = findViewById(R.id.description_task);
         final Spinner spinner = findViewById(R.id.category_name);
         final Button button = findViewById(R.id.edit_button);
+        final boolean state = mode.equals(ADD_MODE) || mode.equals(CREATE_MODE);
         name.setEnabled(state);
         date.setEnabled(state);
         hour.setEnabled(state);
         description.setEnabled(state);
         spinner.setEnabled(state);
-        if (state) button.setText(ADD_MODE);
-        else button.setText(EDIT_MODE);
+        button.setText(mode);
     }
 
+    /**
+     * @return
+     */
     private String isMode() {
         final Button button = findViewById(R.id.edit_button);
         return button.getText().toString();
     }
 
+    /**
+     *
+     */
     private void add() {
         final String name = ViewUtils.getTextViewObj(R.id.name_task,
                 TaskActivity.this);
@@ -123,9 +170,16 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @param v
+     */
     public void onClickHour(final View v) {
         final TextView time = findViewById(R.id.hour_task);
-        final String[] timeArray = task.getTime().split(":");
+        String[] timeArray = new String[2];
+        if (inEdit) timeArray = task.getTime().split(":");
+        final Calendar mCurrentTime = Calendar.getInstance();
+        final int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+        final int minute = mCurrentTime.get(Calendar.MINUTE);
         final TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @SuppressLint("SetTextI18n")
@@ -135,13 +189,20 @@ public class TaskActivity extends AppCompatActivity {
                                           final int selectedMinute) {
                         time.setText(selectedHour + ":" + selectedMinute);
                     }
-                }, Integer.parseInt(timeArray[0]), Integer.parseInt(timeArray[1]), true);
+                }, inEdit ? Integer.parseInt(timeArray[0]) : hour,
+                inEdit ? Integer.parseInt(timeArray[1]) : minute,
+                true);
         timePickerDialog.show();
     }
 
     public void onClickDate(final View v) {
         final TextView date = findViewById(R.id.date_task);
-        final String[] dateArray = task.getDate().split("-");
+        String[] dateArray = new String[3];
+        if (inEdit) dateArray = task.getDate().split("-");
+        final Calendar now = Calendar.getInstance();
+        final int year = now.get(Calendar.YEAR);
+        final int month = now.get(Calendar.MONTH);
+        final int day = now.get(Calendar.DAY_OF_MONTH);
         final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
                     @SuppressLint("SetTextI18n")
@@ -152,17 +213,52 @@ public class TaskActivity extends AppCompatActivity {
                                           final int dayOfMonth) {
                         date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
-                }, Integer.parseInt(dateArray[2]),
-                Integer.parseInt(dateArray[1]),
-                Integer.parseInt(dateArray[0]));
+                }, inEdit ? Integer.parseInt(dateArray[2]) : year,
+                inEdit ? Integer.parseInt(dateArray[1]) : month,
+                inEdit ? Integer.parseInt(dateArray[0]) : day);
         datePickerDialog.show();
     }
 
+    /**
+     * 
+     */
+    private void create() {
+        final String name = ViewUtils.getTextViewObj(R.id.name_task,
+                TaskActivity.this);
+        final String description = ViewUtils.getTextViewObj(R.id.description_task,
+                TaskActivity.this);
+        final String date = ViewUtils.getTextViewObj(R.id.date_task,
+                TaskActivity.this);
+        final String time = ViewUtils.getTextViewObj(R.id.hour_task,
+                TaskActivity.this);
+        final String category = ((Spinner) findViewById(R.id.category_name))
+                .getSelectedItem()
+                .toString();
+        final Task newTask = TaskFactory.createTask(name,
+                1,
+                ETaskCategory.valueOf(category.toUpperCase()).ordinal(),
+                description,
+                date,
+                time);
+        final Validation validation = new TaskValidation(newTask).validation();
+        if (!validation.isValue()) ViewUtils.populateSnackBar(validation.getMsg(),
+                TaskActivity.this);
+        else {
+            TaskDBHelper.insertTask(newTask, new DBHelper(TaskActivity.this));
+            Log.d("Create Task", "Task to create: " + newTask.getName());
+            startActivity(new Intent(TaskActivity.this, MainActivity.class));
+        }
+    }
+
+    /**
+     * @param v
+     */
     public void onClickEdit(final View v) {
-        if (isMode().equals(EDIT_MODE)) enableInput(true);
+        if (isMode().equals(EDIT_MODE)) enableInput(ADD_MODE);
+        else if (isMode().equals(CREATE_MODE)) create();
         else {
             add();
-            enableInput(false);
+            enableInput(EDIT_MODE);
         }
     }
 }

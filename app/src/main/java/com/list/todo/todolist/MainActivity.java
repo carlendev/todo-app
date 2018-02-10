@@ -18,7 +18,6 @@ import com.list.todo.todolist.SQL.TaskDBHelper;
 import com.list.todo.todolist.Utils.ViewUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<TaskDB> tasksDB;
 
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,25 +41,46 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
+    /**
+     *
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
+    }
+
+    /**
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * @param item
+     * @return
+     */
+    // TODO(carlendev) make an only fragment when pass id and when not pass id
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_task_menu:
                 Log.d("Menu Items", "Open Task Create Activity");
-                startActivity(new Intent(this, CreateTaskActivity.class));
+                startActivity(new Intent(this, TaskActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    // TODO(carlendev) better display of list item urgent and on close date and close hour
+    /**
+     *
+     */
+    // TODO(carlendev) better display of and on close date and close hour
     private void updateUI() {
         tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
         if (taskAdapter == null) {
@@ -70,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @param v
+     */
     public void onClickDone(final View v) {
         final View parentRow = (View) v.getParent();
         final ListView listView = (ListView) parentRow.getParent();
@@ -83,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
+    /**
+     * @param v
+     */
     public void onClickItem(final View v) {
         final View parentRow = (View) v.getParent();
         final ListView listView = (ListView) parentRow.getParent();
