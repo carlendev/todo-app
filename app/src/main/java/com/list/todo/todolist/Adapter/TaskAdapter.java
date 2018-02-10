@@ -46,7 +46,7 @@ public class TaskAdapter extends ArrayAdapter<TaskDB> {
         final int year = Integer.parseInt(dateArray[2]);
         final int month = Integer.parseInt(dateArray[1]);
         final int day = Integer.parseInt(dateArray[0]);
-        if (year <= yearCurrent && month <= monthCurrent && day <= dayCurrent)
+        if (year <= yearCurrent && month <= monthCurrent + 1 && day <= dayCurrent)
             name.setTextColor(Color.parseColor(WARNING_COLOR));
     }
 

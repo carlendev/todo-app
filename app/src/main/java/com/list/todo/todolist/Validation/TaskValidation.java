@@ -1,4 +1,4 @@
-package com.list.todo.todolist.validation;
+package com.list.todo.todolist.Validation;
 
 import com.list.todo.todolist.POJO.Task;
 

@@ -22,8 +22,8 @@ import com.list.todo.todolist.POJO.TaskDB;
 import com.list.todo.todolist.Utils.ViewUtils;
 import com.list.todo.todolist.SQL.DBHelper;
 import com.list.todo.todolist.SQL.TaskDBHelper;
-import com.list.todo.todolist.validation.TaskValidation;
-import com.list.todo.todolist.validation.Validation;
+import com.list.todo.todolist.Validation.TaskValidation;
+import com.list.todo.todolist.Validation.Validation;
 
 import java.util.Calendar;
 

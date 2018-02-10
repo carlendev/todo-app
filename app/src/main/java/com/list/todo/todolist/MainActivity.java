@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private TaskAdapter taskAdapter;
     private ArrayList<TaskDB> tasksDB;
 
-
     /**
      * @param savedInstanceState
      */
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      * @return
      */
-    // TODO(carlendev) make an only fragment when pass id and when not pass id
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
@@ -78,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Update Task Items list adapter
      */
-    // TODO(carlendev) better display of and on close date and close hour
     private void updateUI() {
         tasksDB = TaskDBHelper.getActiveTasks(dbHelper);
         if (taskAdapter == null) {

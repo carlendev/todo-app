@@ -13,7 +13,6 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, TaskContract.DB_NAME, null, TaskContract.DB_VERSION);
     }
 
-    // TODO(carlendev) add status for down task and date and category
     @Override
     public void onCreate(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TaskContract.TaskEntry.TABLE + " ( " +

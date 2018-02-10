@@ -1,4 +1,4 @@
-package com.list.todo.todolist.validation;
+package com.list.todo.todolist.Validation;
 
 /**
  * Created by carlendev on 06/02/18.
