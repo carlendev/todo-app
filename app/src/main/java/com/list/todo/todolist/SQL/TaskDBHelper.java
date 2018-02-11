@@ -125,4 +125,21 @@ public class TaskDBHelper {
                 new String[]{String.valueOf(task.get_ID())});
     }
 
+    public static int getCountTask(final DBHelper dbHelper) {
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TaskContract.TaskEntry.TABLE,
+                null);
+        final int count = cursor.getCount();
+        db.close();
+        cursor.close();
+        return count;
+    }
+
+    public static void deleteTaskById(final int id, final DBHelper dbHelper) {
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
+        db.delete(TaskContract.TaskEntry.TABLE, TaskContract.TaskEntry._ID + " = ?",
+                new String[]{Integer.toString(id)});
+        db.close();
+    }
+
 }
