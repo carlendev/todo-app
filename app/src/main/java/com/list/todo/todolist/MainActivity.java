@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ETaskActive state = ETaskActive.ACTIVE;
 
     /**
+     * Method call on Activity Creation
      * @param savedInstanceState
      */
     @Override
@@ -68,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Method call on Activity Destroy
+     * Will close the DB connection
      */
     @Override
     protected void onDestroy() {
@@ -77,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Call on the menu activity creation
      * @param menu
-     * @return
+     * @return state of the creation menu
      */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -87,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Make the action by the selected menu item
      * @param item
-     * @return
+     * @return state of the selected element
      */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Will update the task adapter based on the state of the activity spinner
      * @param state
      */
     private void updateUI(final ETaskActive state) {
@@ -113,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Call when click on the action button
      * @param v
      */
     public void onClickAction(final View v) {
@@ -126,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Call when try to unarchived element
      * @param tv
      * @param position
      */
@@ -138,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Call when click on the done button, will archived a task
      * @param tv
      * @param position
      */
@@ -150,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Open a activity with the id of the selected item
      * @param v
      */
     public void onClickItem(final View v) {

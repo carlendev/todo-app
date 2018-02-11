@@ -41,6 +41,7 @@ public class TaskActivity extends AppCompatActivity {
     private boolean inEdit;
 
     /**
+     * Call on activity creation
      * @param savedInstanceState
      */
     @Override
@@ -70,7 +71,8 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Call on activity deletion
+     * Will close the DB connection
      */
     @Override
     protected void onDestroy() {
@@ -79,6 +81,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
+     * Init all the field with the task passed by the previous activity
      * @param task
      */
     @SuppressLint("SetTextI18n")
@@ -98,8 +101,9 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
+     * Call the action by the selected item
      * @param item
-     * @return
+     * @return state of the selected item
      */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -113,6 +117,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
+     * Will enable or disable all the input bases on the state (edit/add/creation)
      * @param mode Current mode of the activity
      */
     private void enableInput(final CharSequence mode) {
@@ -132,7 +137,8 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
-     * @return
+     * Will return the current mode of the view
+     * @return the current mode
      */
     private String isMode() {
         final Button button = findViewById(R.id.edit_button);
@@ -140,7 +146,9 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Get all the information from the TextView
+     * Update the Task in the DB
+     * Pass to Edit Mode
      */
     private void add() {
         final String name = ViewUtils.getTextViewObj(R.id.name_task,
@@ -171,6 +179,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
+     * Open a choose hour dialog
      * @param v
      */
     public void onClickHour(final View v) {
@@ -195,6 +204,10 @@ public class TaskActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
+    /**
+     * Open a choose date dialog
+     * @param v
+     */
     public void onClickDate(final View v) {
         final TextView date = findViewById(R.id.date_task);
         String[] dateArray = new String[3];
@@ -220,7 +233,9 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
-     * 
+     * Get all the information from the TextView
+     * Create a new Task in the DB
+     * Go back the MainActivity
      */
     private void create() {
         final String name = ViewUtils.getTextViewObj(R.id.name_task,
@@ -251,7 +266,8 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     /**
-     * @param v
+     * Will call the write method based on the state of the activity (add/edit/create)
+     * @param v the current view
      */
     public void onClickEdit(final View v) {
         if (isMode().equals(EDIT_MODE)) enableInput(ADD_MODE);

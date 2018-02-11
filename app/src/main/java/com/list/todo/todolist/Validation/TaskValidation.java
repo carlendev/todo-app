@@ -10,10 +10,19 @@ public class TaskValidation implements IValidation {
 
     private Task task;
 
+
+    /**
+     * Create a new task validation
+     * @param task
+     */
     public TaskValidation(final Task task) {
         this.task = task;
     }
 
+    /**
+     * Return a validation object with a msg and a state
+     * @return Validation instance provide by the validation informations
+     */
     public final Validation validation() {
         final Validation validation = new Validation();
         if (task.getName().isEmpty()) validation.setMsg("Name must have at least one character");

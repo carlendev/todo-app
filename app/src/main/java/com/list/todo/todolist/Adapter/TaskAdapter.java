@@ -34,6 +34,12 @@ public class TaskAdapter extends ArrayAdapter<TaskDB> {
 
     private ETaskActive active;
 
+    /**
+     * Create a new TaskAdapter
+     * @param context the current context
+     * @param tasks A list of tasks to set in the adapter
+     * @param active Task active or not
+     */
     public TaskAdapter(final Context context,
                        final ArrayList<TaskDB> tasks,
                        final ETaskActive active) {
@@ -41,12 +47,23 @@ public class TaskAdapter extends ArrayAdapter<TaskDB> {
         this.active = active;
     }
 
+    /**
+     * Set the color of the TextView title of a task based of the current state fo the instance
+     * @param name
+     * @param task
+     */
     private void setTextNameColor(final TextView name, final TaskDB task) {
         if (task.getCategory() == ETaskCategory.URGENT.ordinal())
             name.setTextColor(Color.parseColor(URGENT_COLOR));
         else name.setTextColor(Color.parseColor(NORMAL_COLOR));
     }
 
+    /**
+     * Set the color of the TextView title to WARNING_COLOR based on the date
+     * If the date is passed it will draw it with the WARNING_COLOR
+     * @param name
+     * @param task
+     */
     private void setTextNameColorByDate(final TextView name, final TaskDB task) {
         final String[] dateArray = task.getDate().split("-");
         final Calendar now = Calendar.getInstance();
@@ -60,6 +77,13 @@ public class TaskAdapter extends ArrayAdapter<TaskDB> {
             name.setTextColor(Color.parseColor(WARNING_COLOR));
     }
 
+    /**
+     * Set the view for the adapter
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return The view of the Task entity
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {

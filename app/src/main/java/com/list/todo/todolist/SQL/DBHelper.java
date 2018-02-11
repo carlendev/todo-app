@@ -9,10 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
+
+    /**
+     * Create a new connection on the database
+     * @param context
+     */
     public DBHelper(final Context context) {
         super(context, TaskContract.DB_NAME, null, TaskContract.DB_VERSION);
     }
 
+    /**
+     * Create tables for the database
+     * @param db
+     */
     @Override
     public void onCreate(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TaskContract.TaskEntry.TABLE + " ( " +
@@ -25,6 +34,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 TaskContract.TaskEntry.STATE + " INTEGER NOT NULL);");
     }
 
+    /**
+     * Upgrade tables by dropping it
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TaskContract.TaskEntry.TABLE);

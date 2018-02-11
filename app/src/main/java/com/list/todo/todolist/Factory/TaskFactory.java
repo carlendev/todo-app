@@ -12,6 +12,16 @@ import java.util.List;
 
 public class TaskFactory {
 
+    /**
+     * Create a new Task
+     * @param name
+     * @param state
+     * @param category
+     * @param description
+     * @param date
+     * @param time
+     * @return a new Task
+     */
     public static Task createTask(final String name,
                                   final Integer state,
                                   final Integer category,
@@ -28,6 +38,17 @@ public class TaskFactory {
         return task;
     }
 
+    /**
+     * Create a new TaskDB
+     * @param name
+     * @param state
+     * @param category
+     * @param description
+     * @param date
+     * @param time
+     * @param _ID
+     * @return A new TaskDB
+     */
     public static TaskDB createTaskDB(final String name,
                                       final Integer state,
                                       final Integer category,
@@ -47,6 +68,11 @@ public class TaskFactory {
     }
 
 
+    /**
+     * Return a list of tasks names
+     * @param tasks
+     * @return A list of tasks names
+     */
     public static List<String> listNames(final List<Task> tasks) {
         final List <String> tasksName = new ArrayList<>();
         for (final Task task : tasks) tasksName.add(task.getName());
